@@ -1,0 +1,21 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-websql": {
+      "PACKAGE_NAME": "br.com.agendaPessoal.vnferna"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "br.com.agendaPessoal.vnferna"
+    },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "br.com.agendaPessoal.vnferna"
+    }
+  },
+  "dependent_plugins": {}
+}
