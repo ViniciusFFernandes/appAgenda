@@ -6,11 +6,11 @@
                 {
                     "source": "C:\\sistemas\\appAgenda\\platforms\\android\\app\\src\\main\\res\\values\\strings.xml",
                     "from": {
-                        "startLines": "-1,2,-1",
-                        "startColumns": "-1,4,-1",
-                        "startOffsets": "-1,55,-1",
-                        "endColumns": "-1,43,-1",
-                        "endOffsets": "-1,94,-1"
+                        "startLines": "4,2,3",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "158,55,99",
+                        "endColumns": "63,43,58",
+                        "endOffsets": "217,94,153"
                     },
                     "to": {
                         "startLines": "2,3,4",

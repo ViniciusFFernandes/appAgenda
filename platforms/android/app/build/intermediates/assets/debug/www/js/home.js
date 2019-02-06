@@ -1,5 +1,6 @@
 var clientes_dados = [];
 var clientes;
+var clientes_criado = false;
 //
 function abrirTab(nameTab){
 	openTab(nameTab);
@@ -7,37 +8,40 @@ function abrirTab(nameTab){
 		$('#cli_telefone').mask('(00)00000-0000');
 	}
 	if(nameTab == 'tabClientes'){
-		clientes = new Vue({
-			beforeCreate: function(){
-				this.mostraDados = false;
-				this.mostraLoading = true;
-			},
-			created: function(){
-				this.mostraDados = true;
-				this.mostraLoading = false;
-			},
-			el: '#tabClientes',
-			data: {
-				Clientes: clientes_dados,
-				mostraDados: '',
-				mostraLoading: ''
-			},
-			methods: {
-				iniciaVarialvel: function(dados){
-					this.Clientes = dados;
+		if(!clientes_criado){
+			clientes = new Vue({
+				beforeCreate: function(){
+					this.mostraDados = false;
+					this.mostraLoading = true;
 				},
-				buscaCliente: function () {
-				  	buscarClientes($("#buscaCliente_nome").val());
+				created: function(){
+					this.mostraDados = true;
+					this.mostraLoading = false;
 				},
-				attBusca: function(dados){
-					for (var i = 0; i <= this.Clientes.length; i++) {
-						clientes.$delete(this.Clientes, i);
+				el: '#tabClientes',
+				data: {
+					Clientes: clientes_dados,
+					mostraDados: '',
+					mostraLoading: ''
+				},
+				methods: {
+					iniciaVarialvel: function(dados){
+						this.Clientes = dados;
+					},
+					buscaCliente: function () {
+						buscarClientes($("#buscaCliente_nome").val());
+					},
+					attBusca: function(dados){
+						for (var i = 0; i < this.Clientes.length; i++) {
+							clientes.$delete(this.Clientes, i);
+						}
+						this.Clientes = dados;
 					}
-					this.Clientes = dados;
 				}
-			}
-		});
-		getClientes();
+			});
+			getClientes();
+			clientes_criado = true;
+		}
 	}
 }
 
@@ -65,6 +69,9 @@ function registrarCliente(){
 						diretorio_foto = '';
 						retornoSpan = '';
 						closeLoading();
+						if(clientes_criado){
+							buscarClientes($("#buscaCliente_nome").val());
+						}
 						alert('Cliente cadastrado com sucesso!');
 					 },
 					 function(tx, error){
