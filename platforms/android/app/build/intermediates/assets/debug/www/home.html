@@ -37,7 +37,7 @@
 	    <button class="icon ion-android-people" onclick="abrirTab('tabClientes')">Consultar</button>
 	</div>
 	<!-- inicio das telas -->
-	<!--  -->
+	<!-- Aba para listar os eventos -->
 	<div class="tab-content active has-header has-sub-header" id="tabAgenda">
 		<div class="row-center margin-top">
 			<div class="col-50">
@@ -49,11 +49,22 @@
 			</div>
 		</div>
 	</div>
-	<!--  -->
+	<!-- Aba para registrar na agenda -->
 	<div class="tab-content has-header has-sub-header" id="tabAgendar">
-		<h2 class="text-strong padding text-pink">Agendar</h2>
+		<div class="list">
+			<div class="item icon ion-clock">
+				<input type="datetime-local" id="age_data_hora" placeholder="Titulo">
+			</div>
+			<div class="item icon ion-android-create">
+				<input type="text" id="age_titulo" placeholder="Titulo">
+			</div>
+			<div class="item">
+				<textarea class="icon ion-ios-list-outline" name="age_descricao" placeholder="Descrição do evento..."></textarea>
+			</div>
+			<button class="light-blue-800 full icon margin-top text-small" id="registrarEvento" onclick="loading('Por favor, espere...'); registrarEvento();">Registrar</button>
+		</div>
 	</div>
-	<!--  -->
+	<!-- Aba para cadastrar pessoas/clientes -->
 	<div class="tab-content has-header has-sub-header" id="tabCadClientes">
 		<div class="list">
 			<div class="item icon ion-android-person">
@@ -75,7 +86,7 @@
 			<button class="light-blue-800 full icon margin-top text-small" id="registrarCliente" onclick="loading('Por favor, espere...'); registrarCliente();">Cadastrar</button>
 		</div>
 	</div>
-	<!--  -->
+	<!-- Aba para listar pessoas/clientes -->
 	<div class="tab-content has-header has-sub-header" id="tabClientes">
 		<div class="list no-border">
 			<div class="item icon icon ion-ios-search-strong">
