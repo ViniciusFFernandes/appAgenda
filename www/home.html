@@ -59,7 +59,27 @@
 				<input type="text" id="age_titulo" placeholder="Titulo">
 			</div>
 			<div class="item">
-				<textarea class="icon ion-ios-list-outline" name="age_descricao" placeholder="Descrição do evento..."></textarea>
+				<div class="row">
+					<div class="col-10">
+						<i class="icon ion-ios-list-outline"></i>
+					</div>
+					<div class="col">
+						<textarea class="text-small" rows="3" id="age_descricao" placeholder="Descrição do evento..."></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<h2 style="font-size: 14px;">
+					<input type="checkbox" class="teal" id="checkVinculaPessoa" onclick="exbirPessoas()"> 
+					Vincular pessoas
+				</h2>
+				<div class="item icon ion-person" style="display: none; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; border-bottom: 1px solid #9f9f9f;" id="divPessoas">
+					<div class="ui-widget">
+						<i class="icon ion-ios-search-strong right"></i>
+					  	<input id="cliente_autocomplete" style="font-size: 14px;">
+					  	<div id="autoCompleteMenu"></div>
+					</div>
+				</div>
 			</div>
 			<button class="light-blue-800 full icon margin-top text-small" id="registrarEvento" onclick="loading('Por favor, espere...'); registrarEvento();">Registrar</button>
 		</div>
@@ -71,7 +91,7 @@
 				<input type="text" id="cli_nome" placeholder="Nome do cliente">
 			</div>
 			<div class="item icon ion-ios-telephone">
-				<input type="text" id="cli_telefone" placeholder="Telefone">
+				<input type="tel" id="cli_telefone" placeholder="Telefone">
 			</div>
 			<div class="item icon ion-ios-location">
 				<input type="text" id="cli_endereco" placeholder="Endereço">

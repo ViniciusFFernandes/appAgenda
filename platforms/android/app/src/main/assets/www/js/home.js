@@ -4,6 +4,9 @@ var clientes_criado = false;
 //
 function abrirTab(nameTab){
 	openTab(nameTab);
+	if(nameTab == 'tabAgendar'){
+		iniciaAutoComplete('cliente_autocomplete', 'autoCompleteMenu', 'clientes');
+	}
 	if(nameTab == 'tabCadClientes'){
 		$('#cli_telefone').mask('(00)00000-0000');
 	}
@@ -62,9 +65,9 @@ function registrarCliente(){
 					[nome, telefone, endereco, diretorio_foto], 
 	  				 function (tx, res) {
 	  				 	//Zera os campos e reseta o button
-	  				 	nome = $("#cli_nome").val('');
-						telefone = $("#cli_telefone").val('');
-						endereco = $("#cli_endereco").val('');
+	  				 	$("#cli_nome").val('');
+						$("#cli_telefone").val('');
+						$("#cli_endereco").val('');
 						$("#" + retornoSpan).html('');
 						diretorio_foto = '';
 						retornoSpan = '';
@@ -82,6 +85,56 @@ function registrarCliente(){
 	  });
 
 }
+
+function registrarEvento(){
+	var titulo = $("#age_titulo").val();
+	var descricao = $("#age_descricao").val();
+	var dataHora = $("#age_data_hora").val();
+	var cliente = $("#cliente_autocomplete").val();
+	if(cliente != ''){
+		idcliente = cli_ids[cliente];
+	}else{
+		idcliente = 'NULL';
+	}
+	if(dataHora == ''){
+		closeLoading();
+		alert('Informe uma data e hora!');
+		return;
+	}
+	if(titulo == ''){
+		closeLoading();
+		alert('Informe um titulo!');
+		return;
+	}
+	db.transaction(function (txn) {
+		var sql = 'INSERT INTO agenda ( ';
+		sql += 'age_titulo, ';
+		sql += 'age_descricao, ';
+		sql += 'age_data_hora, ';
+		sql += 'age_idclientes ) VALUES(?,?,strftime(\'%s\',?),?)';
+		txn.executeSql(sql,
+					[titulo, descricao, dataHora, idcliente], 
+	  				 function (tx, res) {
+	  				 	//Zera os campos e reseta o button
+	  				 	$("#age_titulo").val('');
+						$("#age_descricao").val('');
+						$("#age_data_hora").val('');
+						$("#cliente_autocomplete").val('');
+						if($("#checkVinculaPessoa").is(':checked')){
+							$("#checkVinculaPessoa").click();
+						}
+						closeLoading();
+						alert('Evento registrado com sucesso!');
+					 },
+					 function(tx, error){
+					 	closeLoading();
+					 	alert('Ops!\nParece que tivemos algum problema, tente novamente mais tarde.');
+					 	console.log(tx, error);
+					 });
+	  });
+
+}
+
 function getClientes(){
 
 	db.transaction(function (txn) {	
@@ -129,3 +182,8 @@ function buscarClientes(where_nomeCli){
 
 	
 }
+
+function exbirPessoas(){
+	$("#divPessoas").toggle();
+}
+
