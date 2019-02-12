@@ -1,5 +1,32 @@
 <div class="page">
 	<!-- Modal -->
+<!-- modal edita pessoa -->
+    <div id="divEditaPessoas">
+        <div id="modal_EditaPessoas" class="modal">
+            <div class="modal-content list radius">
+            	<i class="close icon ion-close-round icon-small" onclick="closeModal('modal_EditaPessoas')"></i>
+            	<input type="hidden" id="edit_idpessoas">
+            	<div class="item icon ion-android-person">
+					<input type="text" id="edit_pes_nome" placeholder="Nome do pessoa">
+				</div>
+				<div class="item icon ion-ios-telephone">
+					<input type="tel" id="edit_pes_telefone" placeholder="Telefone">
+				</div>
+				<div class="item icon ion-ios-location">
+					<input type="text" id="edit_pes_endereco" placeholder="Endereço">
+				</div>
+				<div class="item" onclick="showModal('modal_opcaoFotos')">
+	    			<h2 class="text-grey-500">
+	    				<i class="icon ion-camera text-big"></i>
+	    				Adicionar foto
+	    				<span id="retornoFoto"></span>
+	    			</h2>
+	    		</div>
+				<button class="light-blue-800 full icon margin-top text-small" id="atualizarPessoa" onclick="loading('Por favor, espere...'); atualizarPessoa();">Salvar</button>
+            </div>
+        </div>
+    </div>
+    <!-- modal foto -->
 	 <div id="divfoto">
         <div id="modal_opcaoFotos" class="modal">
             <div class="modal-content list radius">
@@ -17,9 +44,11 @@
     <div class="popover mar" id="popoverHome">
 		<div class="list">
 			<div class="item">
+				<i class="icon ion-android-calendar"></i>
 				Planejamento Mensal
 			</div>
 			<div class="item">
+				<i class="icon ion-ios-gear"></i>
 				Configurações
 			</div>
 		</div>
@@ -33,8 +62,8 @@
 	<div class="sub header light-blue-800 shadow tab no-border text-small">
 	    <button class="icon ion-ios-calendar-outline active" onclick="abrirTab('tabAgenda')">Agenda</button>
 	    <button class="icon ion-ios-compose-outline" onclick="abrirTab('tabAgendar')">Registrar</button>
-	    <button class="icon ion-android-person" onclick="abrirTab('tabCadClientes')">Cadastrar</button>
-	    <button class="icon ion-android-people" onclick="abrirTab('tabClientes')">Consultar</button>
+	    <button class="icon ion-android-person" onclick="abrirTab('tabCadPessoas')">Cadastrar</button>
+	    <button class="icon ion-android-people" onclick="abrirTab('tabPessoas')">Consultar</button>
 	</div>
 	<!-- inicio das telas -->
 	<!-- Aba para listar os eventos -->
@@ -43,17 +72,50 @@
 			<div class="col-50">
 				<div class="list">
 					<div class="item icon ion-ios-calendar-outline">
-						<input type="date" id="data_consulta">
+						<input type="date" id="data_consulta" onchange="attListaEventos()">
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="list" v-show="mostraLoading">
+			<div class="item align-center">
+				<img src="img/carregando_bolinhas.gif">
+			</div>
+		</div>
+		<div class="row margin" style="border-bottom: 1px solid #9f9f9f;" style="display: none;" v-show="mostraDados" v-for="evento in Eventos">	
+			<div class="col" v-bind=" {id: evento.idagenda}">
+				<div class="row" style="padding: 2px;">
+					<div class="col">
+						<i v-if="evento.age_realizado != 'S'" class="icon ion-checkmark-round icon-small text-green-600 right" v-on:click="realizado('S', evento.idagenda)">Finalizar</i>
+						<i v-else class="icon ion-close-round icon-small text-red right" v-on:click="realizado('N', evento.idagenda)">Reabrir</i>
+						<h1><i class="icon ion-quote icon-small text-strong">{{evento.age_titulo}}</i></h1>
+					</div>
+				</div>
+				<div class="row" style="padding: 2px;">
+					<div class="col">
+						<h1><i class="icon ion-ios-calendar-outline icon-small"></i>{{converteDateTime(evento.age_data)}}</h1>
+					</div>
+				</div>
+				<div class="row" style="padding: 2px;">
+					<div class="col">
+						<h1><i class="icon ion-information icon-small"></i>{{evento.age_descricao}}</h1>
+					</div>
+				</div>
+				<div class="row" style="padding: 2px;" v-if="evento.age_idpessoas > 0">
+					<div class="col">
+						<h1><i class="icon ion-person icon-small"></i>{{evento.pes_nome}}</h1>
+					</div>
+				</div>
+				<i v-if="evento.age_realizado != 'S'" class="right text-red">Tarefa Pendente</i>
+				<i v-else class="right text-green-600">Tarefa Finalizada</i>
+			</div>				
 		</div>
 	</div>
 	<!-- Aba para registrar na agenda -->
 	<div class="tab-content has-header has-sub-header" id="tabAgendar">
 		<div class="list">
 			<div class="item icon ion-clock">
-				<input type="datetime-local" id="age_data_hora" placeholder="Titulo">
+				<input type="datetime-local" id="age_data_hora" >
 			</div>
 			<div class="item icon ion-android-create">
 				<input type="text" id="age_titulo" placeholder="Titulo">
@@ -76,7 +138,7 @@
 				<div class="item icon ion-person" style="display: none; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; border-bottom: 1px solid #9f9f9f;" id="divPessoas">
 					<div class="ui-widget">
 						<i class="icon ion-ios-search-strong right"></i>
-					  	<input id="cliente_autocomplete" style="font-size: 14px;">
+					  	<input id="pessoa_autocomplete" style="font-size: 14px;">
 					  	<div id="autoCompleteMenu"></div>
 					</div>
 				</div>
@@ -84,17 +146,17 @@
 			<button class="light-blue-800 full icon margin-top text-small" id="registrarEvento" onclick="loading('Por favor, espere...'); registrarEvento();">Registrar</button>
 		</div>
 	</div>
-	<!-- Aba para cadastrar pessoas/clientes -->
-	<div class="tab-content has-header has-sub-header" id="tabCadClientes">
+	<!-- Aba para cadastrar pessoas/pessoas -->
+	<div class="tab-content has-header has-sub-header" id="tabCadPessoas">
 		<div class="list">
 			<div class="item icon ion-android-person">
-				<input type="text" id="cli_nome" placeholder="Nome do cliente">
+				<input type="text" id="pes_nome" placeholder="Nome do pessoa">
 			</div>
 			<div class="item icon ion-ios-telephone">
-				<input type="tel" id="cli_telefone" placeholder="Telefone">
+				<input type="tel" id="pes_telefone" placeholder="Telefone">
 			</div>
 			<div class="item icon ion-ios-location">
-				<input type="text" id="cli_endereco" placeholder="Endereço">
+				<input type="text" id="pes_endereco" placeholder="Endereço">
 			</div>
 			<div class="item" onclick="showModal('modal_opcaoFotos')">
     			<h2 class="text-grey-500">
@@ -103,26 +165,27 @@
     				<span id="retornoFoto"></span>
     			</h2>
     		</div>
-			<button class="light-blue-800 full icon margin-top text-small" id="registrarCliente" onclick="loading('Por favor, espere...'); registrarCliente();">Cadastrar</button>
+			<button class="light-blue-800 full icon margin-top text-small" id="registrarPessoa" onclick="loading('Por favor, espere...'); registrarPessoa();">Cadastrar</button>
 		</div>
 	</div>
 	<!-- Aba para listar pessoas/clientes -->
-	<div class="tab-content has-header has-sub-header" id="tabClientes">
+	<div class="tab-content has-header has-sub-header" id="tabPessoas">
 		<div class="list no-border">
 			<div class="item icon icon ion-ios-search-strong">
 				<span class="right" id="buscandoNoBanco"></span>
-				<input type="text" id="buscaCliente_nome" v-on:keyUp="buscaCliente()" placeholder="Pesquisar...">
+				<input type="text" id="buscaPessoa_nome" v-on:keyUp="buscaPessoa()" placeholder="Pesquisar...">
 			</div>
 			<div class="item align-center" v-show="mostraLoading">
 				<img src="img/carregando_bolinhas.gif">
 			</div>
 		</div>
-		<div class="row margin" style="border-bottom: 1px solid #9f9f9f;" style="display: none;" v-show="mostraDados" v-for="cliente in Clientes">
-			<div class="col-25 padding"><img v-bind:src="cliente.cli_img_perfil" class="avatar circle" style="width: 100px; height: 65px;"></div>	
+		<div class="row margin" style="border-bottom: 1px solid #9f9f9f;" style="display: none;" v-show="mostraDados" v-for="pessoa in Pessoas">
+			<div class="col-25 padding"><img v-bind:src="pessoa.pes_img_perfil" class="avatar circle" style="width: 100px; height: 65px;"></div>	
 			<div class="col padding">
-				<h1 class="text-big text-light">{{cliente.cli_nome}}</h1>
-        		<p><i class="icon icon ion-ios-telephone icon-small"></i>{{cliente.cli_telefone}}</p>
-        		<p><i class="icon ion-ios-location icon-small"></i>{{cliente.cli_endereco}}</p>
+				<i class="icon ion-edit right icon-small" v-on:click="atualizaDados(pessoa.idpessoas)"></i>
+				<h1 class="text-big text-light">{{pessoa.pes_nome}}</h1>
+        		<p><i class="icon icon ion-ios-telephone icon-small"></i>{{pessoa.pes_telefone}}</p>
+        		<p><i class="icon ion-ios-location icon-small"></i>{{pessoa.pes_endereco}}</p>
 			</div>					
 		</div>	
 	</div>

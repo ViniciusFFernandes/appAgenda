@@ -8,7 +8,8 @@ function addFoto(opacao, retorno){
     sourceType: opacao,
     targetWidth: 700,
     targetHeight: 500,
-    saveToPhotoAlbum: true
+    saveToPhotoAlbum: true,
+    correctOrientation: true
   };
   retornoSpan = retorno;
   navigator.camera.getPicture(cameraSuccess, cameraError, cameraOptions);

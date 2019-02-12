@@ -1,9 +1,9 @@
 var dados = [];
-var cli_ids = [];
+var pes_ids = [];
 function iniciaAutoComplete(idInput, idMenu, opcao){
-	  	if(opcao = 'clientes'){
+	  	if(opcao = 'pessoas'){
 		  db.transaction(function (txn) {	
-			var sql = "SELECT * FROM clientes";
+			var sql = "SELECT * FROM pessoas";
 			txn.executeSql(sql, 
 						   [], 
 						   function (tx, res) {
@@ -11,9 +11,9 @@ function iniciaAutoComplete(idInput, idMenu, opcao){
 						   	var exbicao;
 							   	for (var i = 0; i < res.rows.length; i++) {
 							   		//console.log(i);
-							   		exbicao = res.rows.item(i).cli_nome + ' ' + res.rows.item(i).cli_telefone;
-							   		dados[i] = {label: exbicao, value: res.rows.item(i).cli_nome};
-							   		cli_ids[res.rows.item(i).cli_nome] = res.rows.item(i).idclientes;
+							   		exbicao = res.rows.item(i).pes_nome + ' ' + res.rows.item(i).pes_telefone;
+							   		dados[i] = {label: exbicao, value: res.rows.item(i).pes_nome};
+							   		pes_ids[res.rows.item(i).pes_nome] = res.rows.item(i).idpessoas;
 							   	}	
 		 				   	},
 							function(tx, error){
